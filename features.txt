@@ -1,0 +1,68 @@
+PONTOS IMPORTANTES
+
+* Tudo é uma simulação para que possamos fazer os microsserviços se cumunicarem.
+
+* Náo há validação alguma de segurança
+
+* Os sistema irão conversar de síncora e assíncrona para a exploração de conceitos e tecnologias utilizadas em grandes empresas que necessitam de performance e resiliência
+
+* Finalização do projeto em sete dias
+
+CHALLENGERS
+
+* Precisará de altíssima performance na comunicação entre o sistema de checkout e o banco de dados, logo, um solução mais veloz que o REST (Representational State Transfer) 
+
+SOLUÇÃO: Será utilizado o gRPC, um framework criado pela GOOGLE que permite a utilização de transações de forma rápida transitando o payload em binário usando o protocolo HTTP2.
+
+* Precisará garantir resiliência entre a sincronização do processamento das transações com o serviço de extrato bancário.
+
+SOLUÇÃO: Será utilizado o processamento de forma assíncrona e para isso a utilização do Apache Kafka.
+
+* Serão utilizados o Elasticsearch e o Kibana para a geração de Dashboard de métrcias das transações, porém não é responsabilidade do microsserviço do banco persistir os dados no Elasticsearch. 
+Logo, como armazenar as informações no Elasticsearch?
+
+SOLUÇÃO: Será utilizado o Kafka Connect que também assumirá os dados de cada transação e fará a inserção no Elasticsearch.
+
+DINÂMICA DO SISTEMA
+			
+			 __________________          ___________
+			|				   | ---->	|			|
+			| Checkout Backend |		|	Bank	|
+			|__________________| <----	|___________|			
+				   ^	|					  |
+				   |	|					  |
+				   |	v 					  v
+			 ___________________		 ______________		  	  _________________
+			|				    |		|			   |		 |                 |
+			| Checkout Frontend |		| Apache Kafka | <--->   | Extrato Backend |
+			|___________________|		|______________|	 	 |_________________|
+											   |					   ^  |
+											   |					   |  |
+											   v					   |  v
+										 _______________		 __________________
+										|			    |		|                  |
+										| Kafka Connect |		| Extrato Frontend |
+										|_______________|		|__________________|											
+											   |
+											   |
+											   v
+				 ________				 _______________
+				|        |				|               |
+				| Kibana | <----------> | Elasticsearch |
+				|________|				|_______________|		
+
+TECNOLOGIAS UTILIZADAS
+
+* Bank: Golang
+
+* Checkout e Extrato Backend: NodeJS
+
+* Checkout e Extrato Frontend: NextJS
+
+* Kafka e Kafka Connect
+
+* Elasticsearch e Kibana
+
+* Docker e Kubernetes
+
+* Observabilidade: Istio, Kiali, Prometheus & Grafana
